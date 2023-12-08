@@ -6,6 +6,7 @@ Store kapacita_auta("Prostor", 80);
 Store sklad("Polozky", 9999);       // asi pak napsat nejaky mega cislo proste
 Facility Kuryr("kuryr");
 Facility Rozvoz("Je co rozvazet");
+Stat dobaVSystemu("Celkova doba rozvozu");
 
 
 class Rozvazeni : public Process {
@@ -20,10 +21,12 @@ public:
         Wait(300);          // Priprava na rozvazeni
         while(!balicky_v_aute.Full())       // Dokud je co -> rozvazej
         {
+            /*if((Time - tvstup)/3600 > 4.0 && (Time - tvstup)/3600 < 5.0)
+                Wait(3600);*/
             Seize(Rozvoz);
 
             Enter(balicky_v_aute, 1);
-            Wait(Exponential(300));         // Dojezd na misto
+            Wait(Exponential(400));         // Dojezd na misto
 
             if(Random()<= 0.90)
             {
@@ -38,8 +41,10 @@ public:
                 Release(Rozvoz);
             }
         }
-        printf(" ktere rozvezl za: %.1fh rozvezl a vrací se s: %d\n\n", (Time - tvstup)/60/60, nevyzvednute);
+        //printf(" ktere rozvezl za: %.1fh rozvezl a vrací se s: %d\n\n", (Time - tvstup)/60/60, nevyzvednute);
+        dobaVSystemu((Time - tvstup)/60/60);
         Leave(sklad, nevyzvednute);
+        Leave(kapacita_auta, kapacita_auta.Capacity());
         Release(Kuryr);
     }
 };
@@ -58,7 +63,7 @@ public:
                 // Maly balík
                 Enter(sklad, 1);
                 Enter(kapacita_auta, 1);
-                Wait(30);
+                Wait(Exponential(30));
             }
             else
             {
@@ -67,23 +72,22 @@ public:
                 if(kapacita_auta.Full())
                 {
                     // Bylo místo jen na jeden balík, no nic odjíždím
-                    balicky--;
-                    break;
+                    Leave(kapacita_auta, 1); 
+                    continue;
                 }
                 else
                 {
                     // Místo na dva
                     Enter(sklad, 1);
                     Enter(kapacita_auta, 1);
-                    Wait(60);
+                    Wait(Exponential(60));
                 }
             }
             balicky++;  // balíček ve voze
         }
         // Konec nakládání
         Release(Kuryr);
-        Leave(kapacita_auta, 80);
-        printf("Za: %.1fmin nalozil: %d balicku", (Time - tvstup_nak)/60, balicky);
+        //printf("Za: %.1fmin nalozil: %d balicku", (Time - tvstup_nak)/60, balicky);
         (new Rozvazeni)->Activate();
         (new Nakladka)->Activate();
     }
@@ -91,8 +95,8 @@ public:
 
 int main()
 {
-    Init(0, 1000000);            //random cislo
+    Init(0, 999999999);            //random cislo
     (new Nakladka)->Activate();
     Run();
-    printf("\n");
+    dobaVSystemu.Output();
 }
