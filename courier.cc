@@ -22,7 +22,7 @@ Facility Rozvoz("Je co rozvazet");          // Obslužná linka pro rozvoz
 
 // Statistiky
 Stat dobaVSystemu("Pracovní doba kurýra");
-Stat najeteKM("Najete kilometry za dem");
+Stat najeteKM("Najete kilometry za den");
 Stat casJizdy("Celkový čas jízdy kurýra");
 Stat pocet_bal("Počet naložených zásilek");
 Stat nalozeni("Doba naložení zásilek");
