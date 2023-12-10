@@ -21,12 +21,12 @@ Facility Kuryr("kuryr");                    // Obslužná linka kurýr
 Facility Rozvoz("Je co rozvazet");          // Obslužná linka pro rozvoz
 
 // Statistiky
-Stat dobaVSystemu("Pracovní doba kurýra");
+Stat dobaVSystemu("Pracovní doba kurýra (h)");
 Stat najeteKM("Najete kilometry za den");
-Stat casJizdy("Celkový čas jízdy kurýra");
+Stat casJizdy("Celkový čas jízdy kurýra (h)");
 Stat pocet_bal("Počet naložených zásilek");
-Stat nalozeni("Doba naložení zásilek");
-Stat jeden_rozvoz("Doba přepravy jedné zásilky");
+Stat nalozeni("Doba naložení zásilek (min)");
+Stat jeden_rozvoz("Doba přepravy jedné zásilky (min)");
 
 // Proces rozvážení zásilek
 class Rozvazeni : public Process {
